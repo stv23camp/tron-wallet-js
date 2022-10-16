@@ -102,3 +102,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Misc
+test.js
+src/library/db.js
+cron.js
+db/nonce.sqlite
