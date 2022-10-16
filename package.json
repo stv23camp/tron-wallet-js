@@ -1,0 +1,38 @@
+{
+  "name": "js-tron-middleware",
+  "version": "1.0.0",
+  "description": "Js implementation of Tron middleware",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tokenomy/js-tron-middleware.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tokenomy/js-tron-middleware/issues"
+  },
+  "homepage": "https://github.com/tokenomy/js-tron-middleware#readme",
+  "dependencies": {
+    "@sentry/node": "^7.15.0",
+    "@sentry/tracing": "^7.15.0",
+    "api": "^4.5.2",
+    "axios": "^1.1.2",
+    "bignumber.js": "^9.1.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.1",
+    "express-xmlrpc": "^0.0.1",
+    "helmet": "^6.0.0",
+    "lodash": "^4.17.21",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.3.3",
+    "node-cron": "^3.0.2",
+    "sqlite3": "^5.1.1",
+    "tronweb": "^4.4.0",
+    "winston": "^3.8.2"
+  }
+}
