@@ -117,7 +117,7 @@ async function getBalanceTrc20(address, contractAddr, digit){
     return balance;
 }
 
-async function getBalanceNative(address) {
+async function getBalanceNative(targetAddr) {
     let raw = await tronWeb.trx.getBalance(targetAddr);
     raw = new BigNumber(raw);
     BigNumber.config({ DECIMAL_PLACES: 6 });
