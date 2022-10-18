@@ -53,7 +53,7 @@ const routes = {
     GetBalance: contAccounts.getNativeBalance, 
     GetTokenBalance: contAccounts.getTokenBalance, 
     transfertoken: contPayment.transferToken, 
-    transferNative: contPayment.transferNative, 
+    transfer: contPayment.transferNative, 
     GetNowBlockNum: contNetwork.getBlockCount,
     ListTransactions: contTransactions.getPaymentsNative,
     ListTokenTransactions: contTransactions.getPaymentsTrc20
