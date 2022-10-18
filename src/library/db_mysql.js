@@ -21,7 +21,7 @@ async function _getdb(){
     return conn;
 }
 
-async function _executeQuery(query){   
+async function executeQuery(query){   
     const conn = await _getdb(); // err will bubble to sentry on top
     const result = await conn.query(query);
     console.log('query successful');
@@ -30,16 +30,16 @@ async function _executeQuery(query){
 }
 
 async function _insertRow(query){   
-    await _executeQuery(query);
+    await executeQuery(query);
 }
 
 async function _getRow(query){
-    const result = await _executeQuery(query);     
+    const result = await executeQuery(query);     
     return result[0]; 
 }
 
 async function _updateRow(query){
-    await _executeQuery(query);
+    await executeQuery(query);
 }
 
 /*------ CREATE TABLES ------*/
@@ -47,35 +47,35 @@ async function _updateRow(query){
 // payments
 async function createTablePayments(){
     const query = "CREATE TABLE IF NOT EXISTS payments (id int NOT NULL AUTO_INCREMENT,asset_code varchar(255) NOT NULL,wd_address varchar(255) NOT NULL,amount varchar(255) NOT NULL,submit_time int NOT NULL,PRIMARY KEY (id)) ENGINE=InnoDB AUTO_INCREMENT=2020 DEFAULT CHARSET=latin1";
-    await _executeQuery(query);
+    await executeQuery(query);
 }
 
 // counter
 async function createTableCounter(){
     const query = "CREATE TABLE IF NOT EXISTS `counter` (`last_update_time` int NOT NULL,`last_updated_block_num` varchar(255) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1";
-    await _executeQuery(query);
+    await executeQuery(query);
 }
 // trc20_counter
 async function createTableCounterTrc20(){
     const query = "CREATE TABLE IF NOT EXISTS `trc20_counter` (`last_update_time` int unsigned DEFAULT NULL,`last_updated_block_num` int DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1";
-    await _executeQuery(query);
+    await executeQuery(query);
 }
 
 // addresses
 async function createTableAddresses(){
     const query = "CREATE TABLE `addresses` (`id` int NOT NULL AUTO_INCREMENT,`created` int NOT NULL,`address` varchar(255) NOT NULL,`privatekey` varchar(255) NOT NULL,PRIMARY KEY (`id`),UNIQUE KEY `address` (`address`)) ENGINE=InnoDB AUTO_INCREMENT=2020 DEFAULT CHARSET=latin1";
-    await _executeQuery(query);
+    await executeQuery(query);
 }
 
 // TRC20_transactions
 async function createTableTransactionsTrc20(){
     const query = "CREATE TABLE `TRC20_transactions` (`id` int NOT NULL AUTO_INCREMENT,`token` varchar(255) DEFAULT NULL,`txid` varchar(255) NOT NULL,`from` varchar(255) NOT NULL,`to` varchar(255) NOT NULL,`amount` decimal(30,8) DEFAULT NULL,`submitted_time` int NOT NULL,`block` int DEFAULT NULL,PRIMARY KEY (`id`)) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1";
-    await _executeQuery(query);
+    await executeQuery(query);
 }
 // transactions
 async function createTableTransactions(){
     const query = "CREATE TABLE `transactions` (`id` int NOT NULL AUTO_INCREMENT,`txid` varchar(255) NOT NULL,`from` varchar(255) NOT NULL,`to` varchar(255) NOT NULL,`amount` decimal(30,8) DEFAULT NULL,`submitted_time` int NOT NULL,`block` int DEFAULT NULL,PRIMARY KEY (`id`),UNIQUE KEY `txid` (`txid`)) ENGINE=InnoDB AUTO_INCREMENT=4220 DEFAULT CHARSET=latin1";
-    await _executeQuery(query);
+    await executeQuery(query);
 }
 
 /*------ ADDRESSES ------*/
@@ -186,6 +186,7 @@ async function insertPayment(asset_code, wd_address, amount){
 }
 
 module.exports = {    
+    executeQuery: executeQuery,
     // create tables,
     createTableCounter: createTableCounter,
     createTableCounterTrc20: createTableCounterTrc20,
