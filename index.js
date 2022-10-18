@@ -39,21 +39,24 @@ app.use(Sentry.Handlers.tracingHandler());
 app.use(morgan('tiny'));
 app.use(helmet());
 app.use(xmlrpc.bodyParser);
-app.use(authenticate); // checked
+app.use(authenticate); 
 
 /*----- controllers -----*/
 const contAccounts = require('./src/controllers/accounts');
 const contPayment = require('./src/controllers/payment');
 const contNetwork = require('./src/controllers/network');
+const contTransactions = require('./src/controllers/transactions');
 
 const routes = {
-    GenerateAddress: contAccounts.generateAddress, // checked
-    validateaddress: contAccounts.validateAddress, // checked
-    GetBalance: contAccounts.getNativeBalance, // checked
-    GetTokenBalance: contAccounts.getTokenBalance, // checked
-    transfertoken: contPayment.transferToken, // checked
-    transferNative: contPayment.transferNative, // checked
-    GetNowBlockNum: contNetwork.getBlockCount // checked
+    GenerateAddress: contAccounts.generateAddress, 
+    validateaddress: contAccounts.validateAddress, 
+    GetBalance: contAccounts.getNativeBalance, 
+    GetTokenBalance: contAccounts.getTokenBalance, 
+    transfertoken: contPayment.transferToken, 
+    transferNative: contPayment.transferNative, 
+    GetNowBlockNum: contNetwork.getBlockCount,
+    ListTransactions: contTransactions.getPaymentsNative,
+    ListTokenTransactions: contTransactions.getPaymentsTrc20
 }
 
 app.post('/tronrpc', xmlrpc.apiHandler(routes));
