@@ -181,7 +181,7 @@ async function getPayments(){
 
 async function insertPayment(asset_code, wd_address, amount){
     const timestamp = Math.floor(new Date().getTime() / 1000);
-    const query = `INSERT INTO payments (asset_code, wd_address, amount, submit_time) VALUES ('${asset_code}', '${wd_address}', '${amount}', ${submit_time})`;
+    const query = `INSERT INTO payments (asset_code, wd_address, amount, submit_time) VALUES ('${asset_code}', '${wd_address}', '${amount}', ${timestamp})`;
     await _insertRow(query);
 }
 
