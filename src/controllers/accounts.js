@@ -54,7 +54,7 @@ async function validateAddress(req, res){
     }
 }
 
-async function generateAddress(){
+async function generateAddress(_req, res){
    
     const raw = await tron.createAddress(); // create address keypair
 
