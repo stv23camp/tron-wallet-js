@@ -96,6 +96,13 @@ async function insertAddress(addr, pk){
     await _insertRow(query);
 }
 
+async function isAddressExist(addr){
+    const query = `SELECT address from addresses where address='${addr}'`;
+    const result = await _getRow(query);
+    if (result.length>0) return true;
+    return false;
+}
+
 /*------ COUNTER, TRC20_COUNTER ------*/
 
 async function getLastBlockTrc20(){
@@ -205,6 +212,7 @@ module.exports = {
     getAddresses: getAddresses,
     insertAddress: insertAddress,
     getPrivate: getPrivate,
+    isAddressExist: isAddressExist,
     // transactions 
     getTransactionsNative: getTransactionsNative,
     insertTransactionNative: insertTransactionNative,
