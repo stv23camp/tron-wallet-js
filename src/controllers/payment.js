@@ -3,6 +3,7 @@ const encryption = require('../library/encryption');
 const xmlrpc = require('express-xmlrpc');
 const db = require('../library/db_mysql');
 const tron = require('../library/tron');
+const conf = require('../configs/token.config.json');
 /*----- Tron SDK -----*/
 const TronWeb = require('tronweb');
 const tronWeb = new TronWeb({
@@ -17,7 +18,7 @@ tronWeb.setHeader({
 });
 
 async function _duplicateCheck(asset_code, to, amount){
-    const payments = db.getPayments();
+    const payments = await db.getPayments();
 
     const payments_duplicate = payments.filter(function(tx){
         console.log(tx);
