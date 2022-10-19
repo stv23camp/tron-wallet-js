@@ -1,6 +1,6 @@
 require('dotenv').config();
 const tron = require('../library/tron');
-const db = require('../library/db');
+const db = require('../library/db_mysql');
 const encryption = require('../library/encryption');
 
 async function sendTrxToPool(){
