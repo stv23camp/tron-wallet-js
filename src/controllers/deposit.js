@@ -68,7 +68,7 @@ async function scanTrx(){
             // i -> current block processed
             await db.insertTransactionNative(txid, sender_address, to_address, amount_real, i); 
 
-            console.log(`new tx: ${txid}`)
+            console.log(`new tx: ${txid}`);
 
             // increment new_txs_count;
             new_txs_count++;
@@ -80,20 +80,20 @@ async function scanTrx(){
 }
 
 async function scanTrc20(token){
-    // get latest block
-    //const latest_block = await tron.getBlockHeight();
-    //console.log(latest_block);
-    const latest_block = 30658266;
 
     // get last recorded block
-    //const last_block = await db.getLastBlockTrc20();
-    //console.log(last_block);
-    const last_block = 30658265;
+    const last_block_str = await db.getLastBlockTrc20();
+    const last_block = parseInt(last_block_str);
+    console.log(last_block);
+
+    // get latest block
+    const latest_block = await tron.getBlockHeight();
+    console.log(latest_block);
 
     const delta = latest_block-last_block;
 
     // if < 20 exit
-    //if (delta<20) return;
+    if (delta<20) return;
 
     // get trc20 configs
     const conf = require('../configs/token.config.json')[token];
@@ -120,7 +120,6 @@ async function scanTrc20(token){
             if (tx.event_name.toLowerCase()!='transfer') continue;
 
             const to = tron.addressFromHex(tx.result.to);
-            //console.log('to :', to);
 
             if (!addresses.includes(to)) {
                 console.log('address not found');
@@ -128,20 +127,22 @@ async function scanTrc20(token){
             }
 
             const from = tron.addressFromHex(tx.result.from);
-            //console.log('from ', from);
 
             const txid = tx.transaction_id;
-            //console.log(txid);
             const divisor = 10 ** conf.digit;
             const amount = parseFloat(tx.result.value) / divisor;
-            //console.log(amount);
 
             if (recorded_txids.includes(txid)) {
-                console.log('tx already recorded');
+                console.log(`tx: ${txid} already recorded`);
+                continue;
             }
 
             // insert record to trc20_counter
             db.insertTransactionTrc20(token, txid, from, to, amount, i);
+
+            console.log(`new tx: ${txid}`);
+
+            new_txs_count++;
         } // all txs
 
         await db.updateCounterTrc20(i);
