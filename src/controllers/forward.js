@@ -61,7 +61,6 @@ async function sendTokenToPool(token){
 
     // get trc20 configs
     const conf = require('../configs/token.config.json')[token];
-    console.log(conf);
 
     // iterate distinct addresses
     for (let addr of distinct_addresses) {
