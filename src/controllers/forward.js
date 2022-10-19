@@ -51,7 +51,7 @@ async function sendTokenToPool(token){
     const poolAddr = process.env.POOL;
 
     // get recent trc20 txs
-    const txs = await tron.getTransactionsTrc20();
+    const txs = await db.getTransactionsTrc20();
     const receivers = txs.map((item)=>{
         return item.to;
     });
