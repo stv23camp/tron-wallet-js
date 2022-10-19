@@ -150,7 +150,7 @@ async function getTransactionsNative(){
 }
 
 async function getTransactionsTrc20(){
-    const query = "SELECT `txid`, `from`, `to`, `amount`, `block` FROM TRC20_transactions ORDER BY id DESC LIMIT 100";
+    const query = "SELECT `token`, `txid`, `from`, `to`, `amount`, `block` FROM TRC20_transactions ORDER BY id DESC LIMIT 100";
     const result = await _getRow(query);
     return result;
 }
