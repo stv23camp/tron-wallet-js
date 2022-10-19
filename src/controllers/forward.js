@@ -79,7 +79,7 @@ async function sendTokenToPool(token){
             // replenish trx for gas
             const amount_raw = 5 * 10**6;
             const encrypted = process.env.SECRET;
-            const decrypted = await encryption.decryptKey(encrypted);
+            const decrypted = encryption.decryptKey(encrypted);
 
             const txid = await tron.sendNative(poolAddr, addr, amount_raw, decrypted);
 
@@ -91,9 +91,9 @@ async function sendTokenToPool(token){
             // forward to pool
             const balance_raw = balance_token *10**conf.digit;
             const encrypted = await db.getPrivate(addr);
-            const decrypted = await encryption.decryptKey(encrypted);
+            const decrypted = encryption.decryptKey(encrypted);
 
-            const txid = await tron.sendToken(addr, poolAddr, balance_raw, decrypted);
+            const txid = await tron.sendToken(addr, poolAddr, balance_raw, conf.contract, decrypted);
 
             if (!txid || txid.length!=64 ){
                 throw new Error(`forwarding ${token} failed`);
@@ -101,6 +101,7 @@ async function sendTokenToPool(token){
             console.log(`successful token tx: ${txid}`);
         }
     } // end for distinct_addresses
+    console.log('forwarding session ended');
 }
 
 module.exports = {
