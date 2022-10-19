@@ -17,14 +17,12 @@ const _config = {
 async function _getdb(){
     const pool = mysql.createPool(_config);
     const conn = await pool.getConnection();
-    console.log('conn established ');
     return conn;
 }
 
 async function executeQuery(query){   
     const conn = await _getdb(); // err will bubble to sentry on top
     const result = await conn.query(query);
-    console.log('query successful');
     conn.release();
     return result;
 }
