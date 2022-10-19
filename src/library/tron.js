@@ -114,7 +114,7 @@ async function getBalanceTrc20(address, contractAddr, digit){
     const divisor = ten.exponentiatedBy(digit);
     const balance = raw.dividedBy(divisor);
 
-    return balance;
+    return balance.toString();
 }
 
 async function getBalanceNative(targetAddr) {

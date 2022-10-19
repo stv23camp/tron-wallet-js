@@ -16,7 +16,7 @@ async function getTokenBalance(req, res){
 
         const balance = await tron.getBalanceTrc20(targetAddr, contractAddr, digit);
         
-        res.send(xmlrpc.serializeResponse({balance: balance.toString()}));
+        res.send(xmlrpc.serializeResponse({balance: balance}));
     } catch(e) {
         res.send(xmlrpc.serializeFault(500, e.message));
     }
