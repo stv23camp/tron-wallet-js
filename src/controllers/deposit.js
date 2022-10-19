@@ -84,11 +84,9 @@ async function scanTrc20(token){
     // get last recorded block
     const last_block_str = await db.getLastBlockTrc20();
     const last_block = parseInt(last_block_str);
-    console.log(last_block);
 
     // get latest block
     const latest_block = await tron.getBlockHeight();
-    console.log(latest_block);
 
     const delta = latest_block-last_block;
 
@@ -97,7 +95,6 @@ async function scanTrc20(token){
 
     // get trc20 configs
     const conf = require('../configs/token.config.json')[token];
-    console.log(conf);
 
     // get addresses
     const addresses = await db.getAddresses();
@@ -117,24 +114,27 @@ async function scanTrc20(token){
         if (txs.length==0){
             continue;
         }
+
+        console.log(`processing block ${i} , txs: ${txs.length}`);
+
         // iterate pages
         for(let tx of txs){
-            if (tx.contract_address!=conf.contract) continue;
+            if (tx.contract_address!=conf.contract) continue; // contract address validation
 
-            if (tx.event_name.toLowerCase()!='transfer') continue;
+            if (tx.event_name.toLowerCase()!='transfer') continue; // event type validation
 
-            const to = tron.addressFromHex(tx.result.dst);
+            const to = tron.addressFromHex(tx.result['1']);
 
             if (!addresses.includes(to)) {
                 console.log('address not found');
                 continue;
             }
 
-            const from = tron.addressFromHex(tx.result.src);
+            const from = tron.addressFromHex(tx.result['0']);
 
             const txid = tx.transaction_id;
             const divisor = 10 ** conf.digit;
-            const amount = parseFloat(tx.result.wad) / divisor;
+            const amount = parseFloat(tx.result['2']) / divisor;
 
             if (recorded_txids.includes(txid)) {
                 console.log(`tx: ${txid} already recorded`);
