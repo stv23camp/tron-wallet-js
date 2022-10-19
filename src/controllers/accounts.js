@@ -26,7 +26,7 @@ async function getNativeBalance(_req, res){
     try {
         const targetAddr = process.env.POOL;
         const balance = await tron.getBalanceNative(targetAddr);  
-        res.send(xmlrpc.serializeResponse({balance: balance.toString()}));
+        res.send(xmlrpc.serializeResponse({balance: balance}));
     } catch(e) {
         res.send(xmlrpc.serializeFault(500, e.message));
     }

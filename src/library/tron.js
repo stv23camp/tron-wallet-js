@@ -125,7 +125,7 @@ async function getBalanceNative(targetAddr) {
     const divisor = ten.exponentiatedBy(6);
     const balance = raw.dividedBy(divisor);
 
-    return balance;
+    return balance.toString();
 }
 
 async function isAddressValid(addr){

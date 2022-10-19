@@ -18,7 +18,7 @@ async function sendTrxToPool(){
     for (let addr of distinct_addresses) {
         // getbalance for this address
         const balance = await tron.getBalanceNative(addr);
-        const balance_raw = balance * 10**6;
+        const balance_raw = parseFloat(balance) * 10**6;
         // if balance <=10 skip 
         if (balance<=10) continue;
 
@@ -66,16 +66,19 @@ async function sendTokenToPool(token){
     for (let addr of distinct_addresses) {
 
         const balance_str = await tron.getBalanceTrc20(addr, conf.contract, conf.digit);
-        const balance_real = parseFloat(balance_str);
-        // if no trc20 balance, continue
-        if (balance_real<conf.min_balance) continue;
+        const balance_token = parseFloat(balance_str);
+        
+        console.log(`found token: ${balance_str}`)
 
-        const balance_trx = await tron.getBalanceNative(addr);
-        // if trx balance < 5
-        if (balance_trx<5) {
+        if (balance_token<conf.min_balance) continue; // if no trc20 balance, continue
+
+        let balance_trx = await tron.getBalanceNative(addr);
+        balance_trx = parseFloat(balance_trx);
+        
+        if (balance_trx<5) { // if trx balance < 5
             // replenish trx for gas
             const amount_raw = 5 * 10**6;
-            const encrypted = await db.getPrivate(process.env.SECRET);
+            const encrypted = process.env.SECRET;
             const decrypted = await encryption.decryptKey(encrypted);
 
             const txid = await tron.sendNative(poolAddr, addr, amount_raw, decrypted);
@@ -83,6 +86,7 @@ async function sendTokenToPool(token){
             if (!txid || txid.length!=64 ){
                 throw new Error(`replenix trx failed`);
             }
+            console.log(`successful native tx: ${txid}`);
         } else { // else 
             // forward to pool
             const balance_raw = balance_token *10**conf.digit;
@@ -94,6 +98,7 @@ async function sendTokenToPool(token){
             if (!txid || txid.length!=64 ){
                 throw new Error(`forwarding ${token} failed`);
             }
+            console.log(`successful token tx: ${txid}`);
         }
     } // end for distinct_addresses
 }
