@@ -11,19 +11,12 @@ const _config = {
     database: process.env.DBDATABASE,
     debug: false
 }
+let pool = mysql.createPool(_config);
 
 /*------ CORE FUNCTIONS ------*/
 
-async function _getdb(){
-    const pool = mysql.createPool(_config);
-    const conn = await pool.getConnection();
-    return conn;
-}
-
 async function executeQuery(query){   
-    const conn = await _getdb(); // err will bubble to sentry on top
-    const result = await conn.query(query);
-    conn.release();
+    const result = await pool.query(query);
     return result;
 }
 
