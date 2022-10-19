@@ -113,24 +113,28 @@ async function scanTrc20(token){
     for (let i=last_block+1; i<=latest_block; i++) {
         // get transactions by block number
         const txs = await tron.getEventsByBlock(i, [], '');
+
+        if (txs.length==0){
+            continue;
+        }
         // iterate pages
         for(let tx of txs){
             if (tx.contract_address!=conf.contract) continue;
 
             if (tx.event_name.toLowerCase()!='transfer') continue;
 
-            const to = tron.addressFromHex(tx.result.to);
+            const to = tron.addressFromHex(tx.result.dst);
 
             if (!addresses.includes(to)) {
                 console.log('address not found');
                 continue;
             }
 
-            const from = tron.addressFromHex(tx.result.from);
+            const from = tron.addressFromHex(tx.result.src);
 
             const txid = tx.transaction_id;
             const divisor = 10 ** conf.digit;
-            const amount = parseFloat(tx.result.value) / divisor;
+            const amount = parseFloat(tx.result.wad) / divisor;
 
             if (recorded_txids.includes(txid)) {
                 console.log(`tx: ${txid} already recorded`);
