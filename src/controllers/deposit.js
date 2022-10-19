@@ -54,7 +54,7 @@ async function scanTrx(){
 
             // if sender is pool, skip
             const sender_address = tron.addressFromHex(tx.raw_data.contract[0].parameter.value.owner_address);
-            if (sender_address==poolAddr) continue;
+            if (sender_address==poolAddr) continue; // skip if sender is pool, potentially forwarding gas
 
             const txid = tx.txID;
             console.log(txid);
