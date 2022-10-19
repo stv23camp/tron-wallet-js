@@ -1,0 +1,12 @@
+{
+    "usdj" : {
+        "digit" : 18,
+        "contract" : "TLBaRhANQoJFTqre9Nf1mjuwNWjCJeYqUL",
+        "min_balance" : 1 
+    }, 
+    "usdt" : {
+        "digit" : 6,
+        "contract" : "TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj",
+        "min_balance" : 1
+    }
+}
