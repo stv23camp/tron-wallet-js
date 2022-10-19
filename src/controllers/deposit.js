@@ -1,34 +1,28 @@
 require('dotenv').config();
 const tron = require('../library/tron')
-const db = require('../library/db');
+const db = require('../library/db_mysql');
 
 async function scanTrx(){
     const poolAddr = process.env.POOL;
     
     // get counter from DB
-    //const last_block = await db.getLastBlock();
-    //console.log(last_block);
-    const last_block = 30634633;
+    const last_block_str = await db.getLastBlock();
+    const last_block = parseInt(last_block_str);
     
     // get latest block
-    //const latest_block = await tron.getBlockHeight();
-    //console.log(latest_block);
-    const latest_block = 30634634;
-
+    const latest_block = await tron.getBlockHeight();
+   
     // find delta between: latest_block and last_recorded_block
     const delta = latest_block-last_block;
 
     // if < 20 exit
-    //if (delta<20) return;
+    if (delta<20) return;
 
     // get addresses
     const addresses = await db.getAddresses();
-    //console.log(addresses);
 
     // get recent 100 deposit txs
     const recorded_txs = await db.getTransactionsNative();
-    //console.log(recorded_txs);
-    //console.log(typeof recorded_txs);
     const recorded_txids = recorded_txs.map((item)=>{
         return item.txid
     });
@@ -41,30 +35,25 @@ async function scanTrx(){
 
         if (!txs) continue;
 
-        console.log(`processing txs: ${txs.length}`);
+        console.log(`processing block ${i} , txs: ${txs.length}`);
 
         for (const tx of txs) { // iterate each tx
             const contract_type = tx.raw_data.contract[0].type.toLowerCase();
-            //console.log(contract_type);
             if (!contract_type || contract_type!='transfercontract') continue;
 
-            const to_address = tron.addressFromHex(tx.raw_data.contract[0].parameter.value.to_address);
-            //console.log(to_address);
-            
+            const to_address = tron.addressFromHex(tx.raw_data.contract[0].parameter.value.to_address);            
             
             // if no to_address, skip
-            // if (!addresses.includes(to_address)) continue;
+            if (!addresses.includes(to_address)) continue;
 
             const amount_raw = tx.raw_data.contract[0].parameter.value.amount;
             const amount_real = amount_raw * 1e-6;
-            //console.log(amount_real);
 
             // if amount <= 10 TRX, skip
-            //if (amount_real<10) continue;
+            if (amount_real<10) continue;
 
             // if sender is pool, skip
             const sender_address = tron.addressFromHex(tx.raw_data.contract[0].parameter.value.owner_address);
-            //console.log(sender_address);
             if (sender_address==poolAddr) continue;
 
             const txid = tx.txID;
@@ -85,6 +74,8 @@ async function scanTrx(){
             new_txs_count++;
 
         } // end txs iter
+
+        await db.updateCounter(i);
     } // end blocknumber check
 }
 
@@ -153,7 +144,7 @@ async function scanTrc20(token){
             db.insertTransactionTrc20(token, txid, from, to, amount, i);
         } // all txs
 
-        db.updateCounterTrc20(i);
+        await db.updateCounterTrc20(i);
     } // blocks
 }
 
