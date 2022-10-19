@@ -65,9 +65,10 @@ async function sendTokenToPool(token){
     // iterate distinct addresses
     for (let addr of distinct_addresses) {
 
-        const balance_token = await tron.getBalanceTrc20(addr, conf.contract, conf.digit);
+        const balance_str = await tron.getBalanceTrc20(addr, conf.contract, conf.digit);
+        const balance_real = parseFloat(balance_str);
         // if no trc20 balance, continue
-        if (balance_token<conf.min_balance) continue;
+        if (balance_real<conf.min_balance) continue;
 
         const balance_trx = await tron.getBalanceNative(addr);
         // if trx balance < 5
