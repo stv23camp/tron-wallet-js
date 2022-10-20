@@ -127,7 +127,7 @@ async function scanTrc20(token){
             const to = tron.addressFromHex(tx.result['1']);
 
             if (!addresses.includes(to)) {
-                console.log('address not found');
+                //console.log('address not found');
                 continue;
             }
 
