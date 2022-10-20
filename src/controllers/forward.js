@@ -75,9 +75,9 @@ async function sendTokenToPool(token){
         let balance_trx = await tron.getBalanceNative(addr);
         balance_trx = parseFloat(balance_trx);
         
-        if (balance_trx<5) { // if trx balance < 5
+        if (balance_trx<parseFloat(process.env.TRXFORGAS)) { // if trx balance < 7.5
             // replenish trx for gas
-            const amount_raw = 5 * 10**6;
+            const amount_raw = parseFloat(process.env.TRXFORGAS) * 10**6;
             const encrypted = process.env.SECRET;
             const decrypted = encryption.decryptKey(encrypted);
 

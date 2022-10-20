@@ -49,8 +49,8 @@ async function scanTrx(){
             const amount_raw = tx.raw_data.contract[0].parameter.value.amount;
             const amount_real = amount_raw * 1e-6;
 
-            // if amount <= 10 TRX, skip
-            if (amount_real<10) continue;
+            // if amount <= 15 TRX, skip
+            if (amount_real<parseFloat(process.env.MINDEPOSIT)) continue;
 
             // if sender is pool, skip
             const sender_address = tron.addressFromHex(tx.raw_data.contract[0].parameter.value.owner_address);
