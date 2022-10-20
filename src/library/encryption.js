@@ -2,7 +2,7 @@ require('dotenv').config();
 const crypto = require('crypto');
 
 const secret = crypto.createHash('sha256')
-    .update(process.env.HASHKEY, 'utf-8')
+    .update(process.env.ENCRYPTION, 'utf-8')
     .digest('hex').substring(0, 32);
 const iv = crypto.createHash('sha256')
     .update(process.env.IV, 'utf-8')
