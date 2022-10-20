@@ -7,6 +7,6 @@ cron.schedule("13,23 * * * *", async function(){
     try {
         await forward.sendTokenToPool('usdt');
     } catch(e) {
-        sentry.captureException(e.message);
+        sentry.captureException(e);
     }
 });

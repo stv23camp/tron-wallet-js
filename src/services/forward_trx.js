@@ -7,6 +7,6 @@ cron.schedule("30 * * * *", async function(){
     try {
         await forward.sendTrxToPool();
     } catch(e) {
-        sentry.captureException(e.message);
+        sentry.captureException(e);
     }
 });
