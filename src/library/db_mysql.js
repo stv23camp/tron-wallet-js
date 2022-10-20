@@ -4,7 +4,7 @@ const mysql = require('mysql2/promise');
 
 /*------ CONFIG ------*/
 const _config = {
-    connectionLimit: 10,
+    connectionLimit: 20,
     host: process.env.DBHOST,
     user: process.env.DBUSER,
     password: process.env.DBPASSWORD,
