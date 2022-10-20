@@ -1,6 +1,7 @@
 require('dotenv').config();
 const tron = require('../library/tron')
 const db = require('../library/db_mysql');
+const {execSync} = require('child_process');
 
 async function scanTrx(){
     const poolAddr = process.env.POOL;
@@ -150,6 +151,9 @@ async function scanTrc20(token){
         } // all txs
 
         await db.updateCounterTrc20(i);
+
+        // sleep 1 sec
+        execSync('sleep 1');
     } // blocks
 }
 
