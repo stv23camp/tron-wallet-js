@@ -12,6 +12,7 @@ const db_mysql = require('../library/db_mysql');
             await db_mysql.createTableTransactionsTrc20();
             await db_mysql.createTableTransactions();
         } catch(e) {
+            console.log(e);
             sentry.captureException(e.message);
         }
     }

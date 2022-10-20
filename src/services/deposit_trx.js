@@ -7,6 +7,7 @@ cron.schedule("*/2 * * * *", async function(){
     try {
         await deposit.scanTrx();
     } catch(e) {
+        console.log(e);
         sentry.captureException(e);
     }
 });

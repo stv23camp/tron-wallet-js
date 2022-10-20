@@ -7,6 +7,7 @@ cron.schedule("* * * * *", async function(){
     try {
         await deposit.scanTrc20('usdt');
     } catch(e) {
+        console.log(e);
         sentry.captureException(e);
     }
 });
