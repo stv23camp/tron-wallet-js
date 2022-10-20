@@ -112,11 +112,11 @@ async function scanTrc20(token){
         // get transactions by block number
         const txs = await tron.getEventsByBlock(i, [], '');
 
+        console.log(`processing block ${i} , txs: ${txs.length}`);
+
         if (txs.length==0){
             continue;
         }
-
-        console.log(`processing block ${i} , txs: ${txs.length}`);
 
         // iterate pages
         for(let tx of txs){
