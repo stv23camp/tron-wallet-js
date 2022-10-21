@@ -69,6 +69,20 @@ async function createTableTransactions(){
     await executeQuery(query);
 }
 
+async function isTrxExist(tx){
+    const query = `SELECT * from transactions where txid='${tx}'`;
+    const result = await _getRow(query);
+    if (result.length>0) return true;
+    return false;
+}
+
+async function isTrc20Exist(tx){
+    const query = `SELECT * from TRC20_transactions where txid='${tx}'`;
+    const result = await _getRow(query);
+    if (result.length>0) return true;
+    return false;
+}
+
 /*------ ADDRESSES ------*/
 
 async function getAddresses(){
@@ -208,7 +222,9 @@ module.exports = {
     getTransactionsNative: getTransactionsNative,
     insertTransactionNative: insertTransactionNative,
     getTransactionsTrc20: getTransactionsTrc20,
-    insertTransactionTrc20: insertTransactionTrc20,  
+    insertTransactionTrc20: insertTransactionTrc20, 
+    isTrxExist: isTrxExist,
+    isTrc20Exist: isTrc20Exist,
     // payments 
     insertPayment: insertPayment,
     getPayments: getPayments
