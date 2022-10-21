@@ -21,16 +21,17 @@ async function scanTrx(){
 
     // get addresses
     const addresses = await db.getAddresses();
-
-    // get recent 100 deposit txs
-    const recorded_txs = await db.getTransactionsNative();
-    const recorded_txids = recorded_txs.map((item)=>{
-        return item.txid
-    });
     
     let new_txs_count = 0;
     // loop from last_recorded towards latest_block
     for (let i=last_block+1; i<=latest_block; i++) {
+        // get current sec in the minute
+        var d = new Date;
+        let seconds = d.getSeconds();
+        if (seconds>55){
+            console.log('exiting...');
+            return;
+        }
         // get transactions_by_block
         const txs = await tron.transactionByBlock(i);
 
@@ -61,7 +62,8 @@ async function scanTrx(){
             console.log(txid);
 
             // if hash exists in recorded txs, skip
-            if (recorded_txids.includes(txid)) {
+            const isExist = await db.isTrxExist(txid);
+            if (isExist) {
                 console.log(`tx: ${txid} already recorded`);
                 continue;
             }
@@ -100,15 +102,18 @@ async function scanTrc20(token){
     // get addresses
     const addresses = await db.getAddresses();
 
-    // get trc20 transactions
-    const recorded_txs = await db.getTransactionsTrc20();
-    const recorded_txids = recorded_txs.map((item)=>{
-        return item.txid
-    });
-
     let new_txs_count = 0;
     // iterate from latest_block + 1
     for (let i=last_block+1; i<=latest_block; i++) {
+
+        // get current sec in the minute
+        var d = new Date;
+        let seconds = d.getSeconds();
+        if (seconds>55){
+            console.log('exiting...');
+            return;
+        }
+
         // get transactions by block number
         const txs = await tron.getEventsByBlock(i, [], '');
 
@@ -137,7 +142,9 @@ async function scanTrc20(token){
             const divisor = 10 ** conf.digit;
             const amount = parseFloat(tx.result['2']) / divisor;
 
-            if (recorded_txids.includes(txid)) {
+            // if hash exists in recorded txs, skip
+            const isExist = await db.isTrc20Exist(txid);
+            if (isExist) {
                 console.log(`tx: ${txid} already recorded`);
                 continue;
             }
