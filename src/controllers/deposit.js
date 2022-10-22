@@ -46,6 +46,15 @@ async function scanTrx(){
     for (let i=last_block+1; i<=latest_block; i++) {
         // get transactions_by_block
         const txs = await tron.transactionByBlock(i);
+
+        // exit at sec 56 just before update counter
+        var d = new Date;
+        let seconds = d.getSeconds();
+        if (seconds>55){
+            console.log('exiting...');
+            return;
+        }   
+
         await addCounter(i);
 
         if (!txs) continue;
@@ -92,15 +101,7 @@ async function scanTrx(){
             // increment new_txs_count;
             new_txs_count++;
 
-        } // end txs iter
-
-        // get current sec in the minute
-        var d = new Date;
-        let seconds = d.getSeconds();
-        if (seconds>55){
-            console.log('exiting...');
-            return;
-        }        
+        } // end txs iter     
     } // end blocknumber check
 }
 
@@ -145,6 +146,15 @@ async function scanTrc20(token){
 
         // get transactions by block number
         const txs = await tron.getEventsByBlock(i, [], '');
+
+        // exit at sec56 just before update counterTrc20
+        var d = new Date;
+        let seconds = d.getSeconds();
+        if (seconds>55){
+            console.log('exiting...');
+            return;
+        }
+
         await addCounterTrc20(i);
 
         await delay(1000);
@@ -186,14 +196,6 @@ async function scanTrc20(token){
 
             new_txs_count++;
         } // all txs
-
-        // get current sec in the minute
-        var d = new Date;
-        let seconds = d.getSeconds();
-        if (seconds>55){
-            console.log('exiting...');
-            return;
-        }
     } // blocks
 }
 

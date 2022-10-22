@@ -142,9 +142,9 @@ async function sendTokenToPool(token){
                 throw new Error(`forwarding ${token} failed`);
             }
             console.log(`successful token tx: ${txid}`);
-        }
-        console.log('forwarding session ended');
+        }   
     }
+    console.log('forwarding session ended');
 }
 
 module.exports = {
