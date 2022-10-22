@@ -63,10 +63,11 @@ async function sendTrxToPool(){
 
     for (let addr of distinct_addresses) {
         const balance = await getNative(addr);
+        const balance_float = parseFloat(balance);
         await delay(1000);
         console.log(balance);
-        const balance_raw = parseFloat(balance) * 10**6;
-        if (balance<=10) continue;
+        const balance_raw = balance_float * 10**6;
+        if (balance_float<=10) continue;
         console.log(addr);
         const encrypted = await getPk(addr);
         if (!encrypted) {
@@ -117,7 +118,7 @@ async function sendTokenToPool(token){
         const balance_trx_str = await getNative(addr);
         const balance_trx_float = parseFloat(balance_trx_str);
 
-        if (balance_trx<parseFloat(process.env.TRXFORGAS)) { 
+        if (balance_trx_float<parseFloat(process.env.TRXFORGAS)) { 
             const amount_raw = parseFloat(process.env.TRXFORGAS) * 10**6;
             const encrypted = process.env.SECRET;
             const decrypted = encryption.decryptKey(encrypted);
