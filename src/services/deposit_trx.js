@@ -3,7 +3,7 @@ require('dotenv').config();
 const sentry = require('../library/sentry_obj');
 const deposit = require('../controllers/deposit');
 
-cron.schedule("*/2 * * * *", async function(){
+cron.schedule("* * * * *", async function(){
     try {
         await deposit.scanTrx();
     } catch(e) {

@@ -136,7 +136,7 @@ async function sendTokenToPool(token){
             const encrypted = await getPk(addr);
             const decrypted = encryption.decryptKey(encrypted);
 
-            const txid = await tron.sendUsdt(addr, poolAddr, balance_raw, conf.contract, decrypted);
+            const txid = await sendUsdt(addr, poolAddr, balance_raw, conf.contract, decrypted);
 
             if (!txid || txid.length!=64 ){
                 throw new Error(`forwarding ${token} failed`);
