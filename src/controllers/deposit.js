@@ -8,6 +8,20 @@ function delay(ms){
     });
 }
 
+function addCounter(block){
+    return new Promise(async (resolve)=>{
+        await db.updateCounter(block);
+        resolve();
+    });
+}
+
+function addCounterTrc20(block){
+    return new Promise(async (resolve)=>{
+        await db.updateCounterTrc20(block);
+        resolve();
+    });
+}
+
 async function scanTrx(){
     const poolAddr = process.env.POOL;
     
@@ -30,15 +44,9 @@ async function scanTrx(){
     let new_txs_count = 0;
     // loop from last_recorded towards latest_block
     for (let i=last_block+1; i<=latest_block; i++) {
-        // get current sec in the minute
-        var d = new Date;
-        let seconds = d.getSeconds();
-        if (seconds>55){
-            console.log('exiting...');
-            return;
-        }
         // get transactions_by_block
         const txs = await tron.transactionByBlock(i);
+        await addCounter(i);
 
         if (!txs) continue;
 
@@ -86,7 +94,13 @@ async function scanTrx(){
 
         } // end txs iter
 
-        await db.updateCounter(i);
+        // get current sec in the minute
+        var d = new Date;
+        let seconds = d.getSeconds();
+        if (seconds>55){
+            console.log('exiting...');
+            return;
+        }        
     } // end blocknumber check
 }
 
@@ -129,16 +143,9 @@ async function scanTrc20(token){
     // iterate from latest_block + 1
     for (let i=last_block+1; i<=latest_block; i++) {
 
-        // get current sec in the minute
-        var d = new Date;
-        let seconds = d.getSeconds();
-        if (seconds>55){
-            console.log('exiting...');
-            return;
-        }
-
         // get transactions by block number
         const txs = await tron.getEventsByBlock(i, [], '');
+        await addCounterTrc20(i);
 
         await delay(1000);
 
@@ -180,7 +187,13 @@ async function scanTrc20(token){
             new_txs_count++;
         } // all txs
 
-        await db.updateCounterTrc20(i);
+        // get current sec in the minute
+        var d = new Date;
+        let seconds = d.getSeconds();
+        if (seconds>55){
+            console.log('exiting...');
+            return;
+        }
     } // blocks
 }
 
