@@ -103,7 +103,7 @@ async function sendTokenToPool(token){
     console.log('poolAddr removed', receivers_filt.length);
     
     const distinct_addresses = [...new Set(receivers_filt)];
-    console.log('unique ', receivers_filt.length);
+    console.log('unique ', distinct_addresses.length);
 
     const conf = require('../configs/token.config.json')[token];
 
