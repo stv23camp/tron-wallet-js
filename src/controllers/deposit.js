@@ -1,7 +1,12 @@
 require('dotenv').config();
 const tron = require('../library/tron')
 const db = require('../library/db_mysql');
-const {execSync} = require('child_process');
+
+function delay(ms){
+    return new Promise(async (resolve)=>{
+        setTimeout(()=>resolve(), ms);
+    });
+}
 
 async function scanTrx(){
     const poolAddr = process.env.POOL;
@@ -45,6 +50,9 @@ async function scanTrx(){
 
             const to_address = tron.addressFromHex(tx.raw_data.contract[0].parameter.value.to_address);            
             
+            // skip pool address as destination
+            if (to_address==poolAddr) continue; 
+
             // if no to_address, skip
             if (!addresses.includes(to_address)) continue;
 
@@ -82,7 +90,22 @@ async function scanTrx(){
     } // end blocknumber check
 }
 
+function isTokenTxExist(txid){
+    return new Promise(async (resolve)=>{
+        const isExist = await db.isTrc20Exist(txid);
+        resolve(isExist);
+    });
+}
+
+function insertTokenTx(token, txid, from, to, amount, block){
+    return new Promise(async (resolve)=>{
+        await db.insertTransactionTrc20(token, txid, from, to, amount, block);
+        resolve();
+    });
+}
+
 async function scanTrc20(token){
+    const poolAddr = process.env.POOL;
 
     // get last recorded block
     const last_block_str = await db.getLastBlockTrc20();
@@ -117,11 +140,11 @@ async function scanTrc20(token){
         // get transactions by block number
         const txs = await tron.getEventsByBlock(i, [], '');
 
+        await delay(1000);
+
         console.log(`processing block ${i} , txs: ${txs.length}`);
 
-        if (txs.length==0){
-            continue;
-        }
+        if (txs.length==0) continue;
 
         // iterate pages
         for(let tx of txs){
@@ -130,27 +153,27 @@ async function scanTrc20(token){
             if (tx.event_name.toLowerCase()!='transfer') continue; // event type validation
 
             const to = tron.addressFromHex(tx.result['1']);
-
-            if (!addresses.includes(to)) {
-                //console.log('address not found');
-                continue;
-            }
-
             const from = tron.addressFromHex(tx.result['0']);
+
+            // skip if source / destination is poolAddr
+            if (to==poolAddr) continue;
+            if (from==poolAddr) continue;
+
+            if (!addresses.includes(to)) continue; // address not found
 
             const txid = tx.transaction_id;
             const divisor = 10 ** conf.digit;
             const amount = parseFloat(tx.result['2']) / divisor;
 
             // if hash exists in recorded txs, skip
-            const isExist = await db.isTrc20Exist(txid);
+            const isExist = await isTokenTxExist(txid);
             if (isExist) {
                 console.log(`tx: ${txid} already recorded`);
                 continue;
             }
 
             // insert record to trc20_counter
-            db.insertTransactionTrc20(token, txid, from, to, amount, i);
+            await insertTokenTx(token, txid, from, to, amount, i);
 
             console.log(`new tx: ${txid}`);
 
@@ -158,9 +181,6 @@ async function scanTrc20(token){
         } // all txs
 
         await db.updateCounterTrc20(i);
-
-        // sleep 1 sec
-        execSync('sleep 1');
     } // blocks
 }
 
