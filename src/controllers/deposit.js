@@ -157,7 +157,7 @@ async function scanTrc20(token){
 
         await addCounterTrc20(i);
 
-        await delay(1000);
+        await delay(500);
 
         console.log(`processing block ${i} , txs: ${txs.length}`);
 
