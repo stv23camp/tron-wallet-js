@@ -64,7 +64,7 @@ async function sendTrxToPool(){
     for (let addr of distinct_addresses) {
         const balance = await getNative(addr);
         const balance_float = parseFloat(balance);
-        await delay(1000);
+        await delay(2000);
         console.log(balance);
         const balance_raw = balance_float * 10**6;
         if (balance_float<=10) continue;
@@ -111,7 +111,7 @@ async function sendTokenToPool(token){
         const balance_str = await getUsdt(addr, conf.contract, conf.digit);
         const balance_float = parseFloat(balance_str);
         console.log(`found token: ${balance_str}`);
-        await delay(1000);
+        await delay(3000);
 
         if (balance_float<conf.min_balance) continue; 
 

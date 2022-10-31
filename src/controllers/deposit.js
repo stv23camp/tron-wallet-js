@@ -57,6 +57,8 @@ async function scanTrx(){
 
         await addCounter(i);
 
+        await delay(1000);
+
         if (!txs) continue;
 
         console.log(`processing block ${i} , txs: ${txs.length}`);
