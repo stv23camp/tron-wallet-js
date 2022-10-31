@@ -46,7 +46,7 @@ async function transferToken(req, res){
         const contractAddr = conf[token].contract;
         const digit = conf[token].digit;
 
-        const amount_real = payload.amount.toString();
+        const amount_real = Math.floor(payload.amount);
         const amount_raw = amount_real *10**digit;
 
         const isDuplicate = await _duplicateCheck(token, toAddress, amount_real);
@@ -80,7 +80,7 @@ async function transferNative(req, res){
         }
 
         const fromAddr = process.env.POOL;
-        const amount_raw = value * 10**6;
+        const amount_raw = Math.floor(value) * 10**6;
         const decrypted = encryption.decryptKey(pass);
         const txid = await tron.sendNative(fromAddr, toAddr, amount_raw, decrypted);
 
