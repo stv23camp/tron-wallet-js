@@ -55,7 +55,8 @@ async function transferToken(req, res){
             return;
         }
 
-        const decrypted = encryption.decryptKey(payload.pass);
+        const completePass = `${payload.pass}${process.env.SECONDHALF}`;
+        const decrypted = encryption.decryptKey(completePass);
         
         const txid = await tron.sendToken(fromAddr, toAddress, amount_raw, contractAddr, decrypted)
 
@@ -79,9 +80,11 @@ async function transferNative(req, res){
             return;
         }
 
+        const completePass = `${pass}${process.env.SECONDHALF}`;
+
         const fromAddr = process.env.POOL;
         const amount_raw = Math.floor(value) * 10**6;
-        const decrypted = encryption.decryptKey(pass);
+        const decrypted = encryption.decryptKey(completePass);
         const txid = await tron.sendNative(fromAddr, toAddr, amount_raw, decrypted);
 
         await db.insertPayment('trx', toAddr, value.toString());
