@@ -111,7 +111,7 @@ async function sendTokenToPool(token){
         const balance_str = await getUsdt(addr, conf.contract, conf.digit);
         const balance_float = parseFloat(balance_str);
         console.log(`found token: ${balance_str}`);
-        await delay(3000);
+        await delay(2000);
 
         if (balance_float<conf.min_balance) continue; 
 
