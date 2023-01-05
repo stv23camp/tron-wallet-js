@@ -3,6 +3,13 @@ const xmlrpc = require('express-xmlrpc');
 const crypto = require('crypto');
 const database = require('../library/db_sqlite');
 
+function microtime() {
+    let now = performance.now();
+    let sec = Math.floor(now / 1000);
+    let usec = Math.floor((now % 1000) * 1000);
+    return usec + ' ' + sec;
+}
+
 async function checkLogin(req, res, next){  
     if (!req.body || !req.body.params) { 
         res.send(xmlrpc.serializeFault(400, "params empty"));
@@ -36,17 +43,12 @@ async function checkLogin(req, res, next){
     }
 
     // reconstruct hash to match exchange
-    const now_unix = Math.floor(new Date().getTime() / 1000);
-    const this15m = Math.floor(now_unix/60);
+    let nonce = microtime().replace(/(0)\.(\d+) (\d+)/, '$3$1$2');
+    let this15m = Math.floor(Date.now() / 60000);
+    let hash = crypto.createHash('sha256').update(crypto.createHash('md5').update(process.env.SERVERPASS + this15m + process.env.HASHKEY + param_nonce).digest('hex')).digest('hex');
 
-    var hashes = [0, 1, -1].map(function(x){
-        const stitch = process.env.SERVERPASS + (this15m+x).toString() + process.env.HASHKEY + param_nonce;
-        const hash = crypto.createHash('md5', stitch).digest('hex');
-        return crypto.createHash('sha256', hash).digest('hex');
-    });
-
-    if (hashes.includes(param_hash)){
-        res.send(xRpc.serializeFault(401, "unauthorized"));
+    if (hash!=param_hash){
+        res.send(xmlrpc.serializeFault(401, "unauthorized"));
         return;
     }
 
