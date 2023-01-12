@@ -2,6 +2,7 @@ require('dotenv').config();
 const xmlrpc = require('express-xmlrpc');
 const crypto = require('crypto');
 const database = require('../library/db_sqlite');
+const {performance} = require('perf_hooks');
 
 function microtime() {
     let now = performance.now();
