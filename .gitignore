@@ -108,3 +108,6 @@ test.js
 src/library/db.js
 cron.js
 db/nonce.sqlite
+.env.prod 
+.env.edit
+.env.uat
